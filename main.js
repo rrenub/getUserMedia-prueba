@@ -16,11 +16,11 @@ getStream();
 
 /**
  * Permite manejar un stream de vídeo através de la variable videoElement
- * que contiene las propiedades de la etiqueta de vídeo
+ * que contiene las propiedades de la etiqueta de vídeo.
  */
 function getStream() {
   
-  const constraints = { audio: true, video: true }
+  const constraints = { audio: true, video: true } //Tipos de recursos a solicitar
 
   navigator.mediaDevices.getUserMedia(constraints)
                         .then(gotStream)
