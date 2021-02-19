@@ -1,41 +1,62 @@
-//Prueba de getUserMedia - WebRTC
+/**
+ * Archivo: accessUserMedia.js
+ * Descripción: Prototipo simple para obtener stream multimedia local (vídeo y audio) utilizando 
+ * getUserMedia API de WebRTC
+ * 
+ * Autor: Rubén Delgado González
+ * Fecha: 19-2-21
+ */
+
+ //Referencia a los elementos del documento HTML (index.html)
 const videoElement = document.querySelector("video");
-const audioSelect = document.querySelector("select#audioSource");
-const videoSelect = document.querySelector("select#videoSource");
 const videoButton = document.querySelector("input#webcam");
 const audioButton = document.querySelector("input#audio");
 
 getStream();
 
+/**
+ * Permite manejar un stream de vídeo através de la variable videoElement
+ * que contiene las propiedades de la etiqueta de vídeo
+ */
 function getStream() {
   
   const constraints = { audio: true, video: true }
 
-  navigator.mediaDevices
-    .getUserMedia(constraints)
-    .then(gotStream)
-    .catch(handleError);
+  navigator.mediaDevices.getUserMedia(constraints)
+                        .then(gotStream)
+                        .catch(handleError);
 }
 
+/**
+ * Función callback para getUserMedia cuando se recoge el stream multimedia
+ * @param {MediaStream} stream - Stream del contenido multimedia
+ */
 function gotStream(stream) {
-  window.stream = stream; // guarda el stream para que se puede manipular posteriormente
-  videoElement.srcObject = stream;
+  window.stream = stream; // make variable available to browser console
+  videoElement.srcObject = stream; 
 }
 
+/**
+ * Función en caso de que el promise de getUserMedia sea rechazado
+ * @param {NotFoundError} error - Error retornado de getUserMedia
+ */
 function handleError(error) {
   console.error("Error: ", error);
 }
 
-//Evento para activar y desactivar uso de la cámara
+/**
+ * Evento para el botón para activar y desactivar el stream multimedia de la cámara.
+ */
 videoButton.onclick = () => {
     console.log("on hide video button click");
     window.stream.getVideoTracks()[0].enabled = !(window.stream.getVideoTracks()[0].enabled);
     var cameraStatus = window.stream.getVideoTracks()[0].enabled ? "Desactivar cámara" : "Activar cámara";
-    console.log(cameraStatus)
     videoButton.setAttribute("value", cameraStatus)
 }
 
-//Evento para activar y desactivar uso del micrófono
+/**
+ * Evento para el botón para activar y desactivar el stream multimedia de audio.
+ */
 audioButton.onclick = () => {
     console.log("on mute audio button click");
     window.stream.getAudioTracks()[0].enabled = !(window.stream.getAudioTracks()[0].enabled);
