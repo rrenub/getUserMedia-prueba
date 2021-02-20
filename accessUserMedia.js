@@ -24,7 +24,7 @@ function getStream() {
 
   navigator.mediaDevices.getUserMedia(constraints)
                         .then(gotStream)
-                        .catch(handleError);
+                        .catch(handleGetUserMediaError);
 }
 
 /**
@@ -33,14 +33,14 @@ function getStream() {
  */
 function gotStream(stream) {
   window.stream = stream; // make variable available to browser console
-  videoElement.srcObject = stream; 
+  videoElement.srcObject = stream; //Enlaza el stream de vídeo al tag HTML de video
 }
 
 /**
  * Función en caso de que el promise de getUserMedia sea rechazado
- * @param {NotFoundError} error - Error retornado de getUserMedia
+ * @param {Error} error - Error retornado de getUserMedia (NotfoundError o PermissionDeniedError)
  */
-function handleError(error) {
+function handleGetUserMediaError(error) {
   console.error("Error: ", error);
 }
 
