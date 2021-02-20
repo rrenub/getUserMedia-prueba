@@ -4,7 +4,7 @@ This is just a repo to upload WebRTC demos to try different things of the API.
 
 ## Table of contents
 * [Demo of MediaStream API](#Demo-of-MediaStream-API)
-* [Demo of RTCPeerConnection locally] (#Demo-of-RTCPeerConnection-locally)
+* [Demo of RTCPeerConnection locally](#Demo-of-RTCPeerConnection-locally)
 
 ## Demo of MediaStream API
 
