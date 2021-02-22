@@ -43,6 +43,9 @@ let remotePC;
         .catch(setSDPError)
  }
 
+ /**
+  * Termina la llamada 
+  */
  function onHangButton() {
     localPC.close();
     remotePC.close();
@@ -52,6 +55,9 @@ let remotePC;
     hangButton.disabled = true;
  }
 
+ /**
+  * Función callback cuando se encuentra un candidato ICE para comunicarlo al otro par
+  */
  function handleIceCandidate(event) {
     const peerConnection = event.target;
     const iceCandidate = event.candidate;
@@ -69,6 +75,7 @@ let remotePC;
     }
 }
 
+
 function createdOffer(offerDescription) {
     localPC.setLocalDescription(offerDescription)
         .then(() => {
@@ -85,7 +92,12 @@ function createdOffer(offerDescription) {
         .catch(setSDPError);
 }
 
+
+/**
+ * Callback para crear la respuesta SDP desde el par remoto
+ */
 function createdAnswer(answerDescription) {
+    //Se guarda 
     remotePC.setLocalDescription(answerDescription)
         .then(() => {
             setLocalDescriptionSuccess(remotePC)
@@ -97,14 +109,13 @@ function createdAnswer(answerDescription) {
         }).catch(setSDPError);
 }
 
-function setSDPError(err) {
-    console.error(`ERROR: ${err.toString()}`)
-}
-
+//Función callback para 
 function gotRemoteStream(event) {
     console.log("gotRemoteStream");
-    console.log(event.streams);
-    const remoteStream = event.streams[0];
+    const remoteStream = event.streams[0]; //Recoge el stream multimedia
+
+    //Dependiendo si es la primera vez que se llama, creará un objeto video o usará el ya creado
+    //para enlazar el stream multimedia remoto
     if(document.getElementById("video-remoto")) {
         document.getElementById("video-remoto").srcObject = remoteStream;
     } else {
@@ -116,44 +127,50 @@ function gotRemoteStream(event) {
     }
 }
 
+  // Gets the "other" peer connection.
+  function getOtherPeer(peerConnection) {
+    return (peerConnection === localPC) ?
+        remotePC : localPC;
+}
+
 
 /**
- * Métodos locales para logging
+ * Métodos locales para realizar logs en consola
  */
 
+ //Devuelve si el par referenciado es el par local o remoto (Para realizar logs en consola)
 function getPeerName(peerConnection) {
     return (peerConnection === localPC) ?
         'localPeerConnection' : 'remotePeerConnection';
 }
 
-  // Gets the "other" peer connection.
-function getOtherPeer(peerConnection) {
-    return (peerConnection === localPC) ?
-        remotePC : localPC;
-}
-
-// Logs success when setting session description.
+// Muestra en consola que se ha registrado correctamente en consola el par
 function setDescriptionSuccess(peerConnection, functionName) {
     const peerName = getPeerName(peerConnection);
     console.log(`${peerName} ${functionName} complete.`);
 }
   
-// Logs success when localDescription is set.
+// Muestra en consola que ha realizado con éxito la función setLocalDescription
 function setLocalDescriptionSuccess(peerConnection) {
     setDescriptionSuccess(peerConnection, 'setLocalDescription');
 }
   
-// Logs success when remoteDescription is set.
+// Muestra en consola que ha realizado con éxito la función setRemoteDescription
 function setRemoteDescriptionSuccess(peerConnection) {
     setDescriptionSuccess(peerConnection, 'setRemoteDescription');
 }
 
-// Logs that the connection succeeded.
+//En caso de que setLocalDescription y setRemoteDescription no hayan podido establecer la información SDP
+function setSDPError(err) {
+    console.error(`ERROR: ${err.toString()}`)
+}
+
+// Muestra en consola que ha añadido con éxito el candidato ICE para la conexión
 function handleConnectionSuccess(peerConnection) {
     console.log(`${getPeerName(peerConnection)} addIceCandidate success.`);
 };
   
-// Logs that the connection failed.
+// Muestra en consola que ha añadido no ha sido con exíto el candidato ICE para la conexión
 function handleConnectionFailure(peerConnection, error) {
     console.log(`${getPeerName(peerConnection)} failed to add ICE Candidate:\n`+
         `${error.toString()}.`);
